@@ -1,6 +1,46 @@
 <?php
 session_start();
 include("../config/db.php");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $role = $_POST['role'];
+
+    $sql = "SELECT * FROM users WHERE email='$email' AND role='$role' LIMIT 1";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows == 1) {
+
+        $user = $result->fetch_assoc();
+
+        if ($user['is_active'] == 0) {
+            echo "Account disabled!";
+            exit;
+        }
+
+        if (password_verify($password, $user['password'])) {
+
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['email'] = $user['email'];
+
+            if ($user['role'] == 'admin') {
+                header("Location: ../admin/dashboard.php");
+            } else {
+                header("Location: ../staff/dashboard.php");
+            }
+            exit;
+
+        } else {
+            echo "Wrong password!";
+        }
+
+    } else {
+        echo "User not found!";
+    }
+}
 ?>
 
 <!DOCTYPE html>
