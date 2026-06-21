@@ -1,33 +1,63 @@
 <?php
 
-include("../config/auth.php");
-include("../config/db.php");
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-if($_SESSION['role'] != 'staff')
-{
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/login.php");
     exit;
 }
 
-include("../layouts/header.php");
+if ($_SESSION['role'] !== 'staff') {
+    header("Location: ../auth/login.php");
+    exit;
+}
+
+$pageTitle = "Staff Dashboard";
+
+ob_start();
 ?>
 
-<div class="flex">
+<div class="grid md:grid-cols-4 gap-6">
 
-<?php include("../layouts/sidebar.php"); ?>
+    <div class="bg-white shadow rounded-xl p-5">
+        <h3 class="text-gray-500">Books</h3>
+        <p class="text-4xl font-bold">0</p>
+    </div>
 
-<div class="ml-64 p-8">
+    <div class="bg-white shadow rounded-xl p-5">
+        <h3 class="text-gray-500">Members</h3>
+        <p class="text-4xl font-bold">0</p>
+    </div>
 
-<h1 class="text-3xl font-bold">
-Staff Dashboard
-</h1>
+    <div class="bg-white shadow rounded-xl p-5">
+        <h3 class="text-gray-500">Issued</h3>
+        <p class="text-4xl font-bold">0</p>
+    </div>
 
-<p class="mt-4 text-gray-600">
-Welcome <?= $_SESSION['full_name']; ?>
-</p>
+    <div class="bg-white shadow rounded-xl p-5">
+        <h3 class="text-gray-500">Returns</h3>
+        <p class="text-4xl font-bold">0</p>
+    </div>
 
 </div>
 
+<div class="mt-8 bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-bold mb-2">
+        Welcome
+    </h2>
+
+    <p>
+        Hello
+        <strong><?= htmlspecialchars($_SESSION['full_name']); ?></strong>,
+        welcome to University Library Management System.
+    </p>
 </div>
 
-<?php include("../layouts/footer.php"); ?>
+<?php
+
+$content = ob_get_clean();
+
+include("../layouts/main_layout.php");
