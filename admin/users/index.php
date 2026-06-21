@@ -96,7 +96,13 @@ $users = $conn->query($sql);
                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
                 + Add Staff Account
             </a>
+
         </div>
+                <?php if (isset($_GET["success"]) && $_GET["success"] === "staff_created"): ?>
+            <div class="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                Staff account created successfully.
+            </div>
+        <?php endif; ?>
 
         <!-- Search -->
         <div class="bg-white rounded-lg shadow p-4 mb-5">
