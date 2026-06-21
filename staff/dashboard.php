@@ -1,12 +1,33 @@
 <?php
-session_start();
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'staff') {
+include("../config/auth.php");
+include("../config/db.php");
+
+if($_SESSION['role'] != 'staff')
+{
     header("Location: ../auth/login.php");
     exit;
 }
+
+include("../layouts/header.php");
 ?>
 
-<h1>Staff Dashboard</h1>
-<div class="text-sm font-semibold text-white truncate"><?php echo htmlspecialchars($_SESSION['full_name']); ?></div>
-<div class="text-xs text-gray-400 truncate"><?php echo htmlspecialchars($_SESSION['email']); ?></div>
+<div class="flex">
+
+<?php include("../layouts/sidebar.php"); ?>
+
+<div class="ml-64 p-8">
+
+<h1 class="text-3xl font-bold">
+Staff Dashboard
+</h1>
+
+<p class="mt-4 text-gray-600">
+Welcome <?= $_SESSION['full_name']; ?>
+</p>
+
+</div>
+
+</div>
+
+<?php include("../layouts/footer.php"); ?>
