@@ -36,15 +36,18 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
         </div>
 
         <nav class="flex-1 p-4 space-y-2 text-sm">
+            <a href="dashboard.php" class="block p-2 rounded bg-blue-700">Dashboard</a>
 
-            <a href="#" class="block p-2 rounded hover:bg-blue-700">Dashboard</a>
+            <a href="users/index.php" class="block p-2 rounded hover:bg-blue-700">
+                User Management
+            </a>
+
             <a href="#" class="block p-2 rounded hover:bg-blue-700">Books</a>
             <a href="#" class="block p-2 rounded hover:bg-blue-700">Members</a>
             <a href="#" class="block p-2 rounded hover:bg-blue-700">Categories</a>
             <a href="#" class="block p-2 rounded hover:bg-blue-700">Issue Books</a>
             <a href="#" class="block p-2 rounded hover:bg-blue-700">Reports</a>
             <a href="#" class="block p-2 rounded hover:bg-blue-700">Activity Logs</a>
-
         </nav>
 
         <div class="p-4 border-t border-blue-700">
