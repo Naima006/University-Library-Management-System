@@ -89,34 +89,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 }
+
+$pageTitle = "Add Staff Account";
+
+ob_start();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Staff Account - ULMS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<div class="max-w-3xl mx-auto">
 
-<body class="bg-gray-100">
-
-<div class="min-h-screen flex items-center justify-center p-5">
-
-    <div class="w-full max-w-2xl bg-white rounded-xl shadow p-7">
-
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Add Staff Account</h1>
-                <p class="text-sm text-gray-500">
-                    Create a login account for a library staff member.
-                </p>
-            </div>
-
-            <a href="index.php" class="text-sm text-blue-600 hover:text-blue-800">
-                ← Back to Users
-            </a>
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-xl font-bold text-slate-800">Create Staff Account</h1>
+            <p class="text-sm text-gray-500">
+                Add a staff member who can log in to the library system.
+            </p>
         </div>
+
+        <a href="index.php"
+           class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+            <i class="fas fa-arrow-left mr-1"></i>
+            Back to Users
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6 md:p-8">
 
         <?php if (!empty($error_message)): ?>
             <div class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -127,7 +123,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <form method="POST" class="space-y-5">
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name <span class="text-red-500">*</span>
+                </label>
+
                 <input
                     type="text"
                     name="full_name"
@@ -139,9 +138,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Email Address <span class="text-red-500">*</span>
+                    </label>
+
                     <input
                         type="email"
                         name="email"
@@ -153,7 +154,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Phone Number
+                    </label>
+
                     <input
                         type="text"
                         name="phone"
@@ -162,13 +166,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
                 </div>
-
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Password <span class="text-red-500">*</span>
+                    </label>
+
                     <input
                         type="password"
                         name="password"
@@ -179,7 +184,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Confirm Password <span class="text-red-500">*</span>
+                    </label>
+
                     <input
                         type="password"
                         name="confirm_password"
@@ -188,11 +196,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
                 </div>
-
             </div>
 
-            <div class="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-700">
-                This account will be created with the <strong>Staff</strong> role.
+            <div class="rounded-lg bg-blue-50 border border-blue-100 px-4 py-3 text-sm text-blue-700">
+                <i class="fas fa-shield-alt mr-1"></i>
+                This account will automatically be created with the <strong>Staff</strong> role.
             </div>
 
             <div class="flex justify-end gap-3 pt-2">
@@ -203,6 +211,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <button type="submit"
                         class="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <i class="fas fa-user-plus mr-1"></i>
                     Create Staff Account
                 </button>
             </div>
@@ -210,8 +219,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </form>
 
     </div>
-
 </div>
 
-</body>
-</html>
+<?php
+$content = ob_get_clean();
+include("../../layouts/main_layout.php");
+?>

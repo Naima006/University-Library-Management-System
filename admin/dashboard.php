@@ -1,103 +1,89 @@
 <?php
 session_start();
+include("../config/db.php");
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php");
     exit;
 }
+
+$booksCount = 0;
+$membersCount = 0;
+$issuedCount = 0;
+$staffCount = 0;
+
+$booksResult = $conn->query("SELECT COUNT(*) AS total FROM books");
+if ($booksResult) {
+    $booksCount = $booksResult->fetch_assoc()['total'];
+}
+
+$membersResult = $conn->query("SELECT COUNT(*) AS total FROM members WHERE is_active = 1");
+if ($membersResult) {
+    $membersCount = $membersResult->fetch_assoc()['total'];
+}
+
+$issuedResult = $conn->query("SELECT COUNT(*) AS total FROM book_issues WHERE status = 'issued'");
+if ($issuedResult) {
+    $issuedCount = $issuedResult->fetch_assoc()['total'];
+}
+
+$staffResult = $conn->query("SELECT COUNT(*) AS total FROM users WHERE role = 'staff' AND is_active = 1");
+if ($staffResult) {
+    $staffCount = $staffResult->fetch_assoc()['total'];
+}
+
+$pageTitle = "Admin Dashboard";
+
+ob_start();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard - ULMS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
-<body class="bg-gray-100">
+    <div class="bg-white shadow rounded-xl p-5">
+        <p class="text-sm text-gray-500">Total Books</p>
+        <p class="mt-2 text-4xl font-bold text-slate-800">
+            <?= $booksCount ?>
+        </p>
+        <p class="mt-2 text-xs text-gray-400">Books in the library catalog</p>
+    </div>
 
-<div class="flex h-screen">
+    <div class="bg-white shadow rounded-xl p-5">
+        <p class="text-sm text-gray-500">Active Members</p>
+        <p class="mt-2 text-4xl font-bold text-slate-800">
+            <?= $membersCount ?>
+        </p>
+        <p class="mt-2 text-xs text-gray-400">Members currently active</p>
+    </div>
 
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-blue-900 text-white flex flex-col">
+    <div class="bg-white shadow rounded-xl p-5">
+        <p class="text-sm text-gray-500">Issued Books</p>
+        <p class="mt-2 text-4xl font-bold text-slate-800">
+            <?= $issuedCount ?>
+        </p>
+        <p class="mt-2 text-xs text-gray-400">Books not yet returned</p>
+    </div>
 
-        <div class="p-5 text-xl font-bold border-b border-blue-700">
-            📚 ULMS Admin
-        </div>
-
-        <div class="p-4 text-sm border-b border-blue-700">
-            <div class="font-semibold">
-                <?php echo htmlspecialchars($_SESSION['full_name']); ?>
-            </div>
-            <div class="text-blue-200 text-xs">
-                <?php echo htmlspecialchars($_SESSION['email']); ?>
-            </div>
-        </div>
-
-        <nav class="flex-1 p-4 space-y-2 text-sm">
-            <a href="dashboard.php" class="block p-2 rounded bg-blue-700">Dashboard</a>
-
-            <a href="users/index.php" class="block p-2 rounded hover:bg-blue-700">
-                User Management
-            </a>
-
-            <a href="#" class="block p-2 rounded hover:bg-blue-700">Books</a>
-            <a href="#" class="block p-2 rounded hover:bg-blue-700">Members</a>
-            <a href="#" class="block p-2 rounded hover:bg-blue-700">Categories</a>
-            <a href="#" class="block p-2 rounded hover:bg-blue-700">Issue Books</a>
-            <a href="#" class="block p-2 rounded hover:bg-blue-700">Reports</a>
-            <a href="#" class="block p-2 rounded hover:bg-blue-700">Activity Logs</a>
-        </nav>
-
-        <div class="p-4 border-t border-blue-700">
-            <a href="../auth/logout.php"
-               class="block text-center bg-red-500 hover:bg-red-600 p-2 rounded">
-                Logout
-            </a>
-        </div>
-
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 p-6">
-
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">
-            Admin Dashboard
-        </h1>
-
-        <!-- CARDS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            <div class="bg-white p-5 rounded-lg shadow">
-                <h2 class="text-gray-500 text-sm">Total Books</h2>
-                <p class="text-2xl font-bold">0</p>
-            </div>
-
-            <div class="bg-white p-5 rounded-lg shadow">
-                <h2 class="text-gray-500 text-sm">Total Members</h2>
-                <p class="text-2xl font-bold">0</p>
-            </div>
-
-            <div class="bg-white p-5 rounded-lg shadow">
-                <h2 class="text-gray-500 text-sm">Issued Books</h2>
-                <p class="text-2xl font-bold">0</p>
-            </div>
-
-        </div>
-
-        <!-- QUICK INFO -->
-        <div class="mt-8 bg-white p-5 rounded-lg shadow">
-            <h2 class="text-lg font-semibold mb-3">System Overview</h2>
-            <p class="text-gray-600 text-sm">
-                Welcome to the University Library Management System.
-                Use the sidebar to manage books, members, issue/return operations and reports.
-            </p>
-        </div>
-
-    </main>
+    <div class="bg-white shadow rounded-xl p-5">
+        <p class="text-sm text-gray-500">Active Staff</p>
+        <p class="mt-2 text-4xl font-bold text-slate-800">
+            <?= $staffCount ?>
+        </p>
+        <p class="mt-2 text-xs text-gray-400">Staff accounts currently active</p>
+    </div>
 
 </div>
 
-</body>
-</html>
+<div class="mt-8 bg-white rounded-xl shadow p-6">
+    <h2 class="text-xl font-bold text-slate-800">Welcome back</h2>
+
+    <p class="mt-2 text-gray-600">
+        Hello <strong><?= htmlspecialchars($_SESSION['full_name']); ?></strong>.
+        Use the navigation menu to manage staff accounts, books, members, categories, and library operations.
+    </p>
+</div>
+
+<?php
+$content = ob_get_clean();
+
+include("../layouts/main_layout.php");
+?>
