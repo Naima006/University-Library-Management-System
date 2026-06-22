@@ -1,151 +1,78 @@
 <?php
-
 session_start();
 include("../config/db.php");
 
-$id = intval($_GET['id']);
+$id = (int)$_GET['id'];
 
-$stmt = $conn->prepare("
-SELECT *
-FROM books
-WHERE book_id = ?
-");
-
+$stmt = $conn->prepare("SELECT * FROM books WHERE book_id=?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
+$book = $stmt->get_result()->fetch_assoc();
 
-$result = $stmt->get_result();
+$pageTitle = "Edit Book";
 
-if($result->num_rows == 0)
-{
-    die("Book not found");
-}
-
-$book = $result->fetch_assoc();
-
-$categories = $conn->query("
-SELECT *
-FROM categories
-ORDER BY category_name
-");
-
+ob_start();
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-<title>Edit Book</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
+<div class="max-w-3xl mx-auto">
 
-<body class="bg-slate-100">
+    <div class="bg-white rounded-xl shadow p-5">
 
-<div class="max-w-3xl mx-auto mt-10">
-
-    <div class="bg-white shadow rounded-xl p-6">
-
-        <h1 class="text-3xl font-bold mb-6">
-            Edit Book
-        </h1>
+        <div class="border-b pb-3 mb-4">
+            <h1 class="text-2xl font-bold">Edit Book</h1>
+            <p class="text-gray-500 text-sm">Update book details</p>
+        </div>
 
         <form action="update.php" method="POST">
 
-            <input
-                type="hidden"
-                name="book_id"
-                value="<?= $book['book_id'] ?>">
+            <input type="hidden" name="book_id" value="<?= $book['book_id'] ?>">
 
-            <div class="mb-4">
+            <div class="grid gap-3">
 
-                <label>Title</label>
+                <input class="border p-2.5 rounded-lg w-full"
+                       name="title"
+                       value="<?= htmlspecialchars($book['title']) ?>">
 
-                <input
-                    type="text"
-                    name="title"
-                    value="<?= htmlspecialchars($book['title']) ?>"
-                    class="w-full border p-3 rounded-lg"
-                    required>
+                <input class="border p-2.5 rounded-lg w-full"
+                       name="author_name"
+                       value="<?= htmlspecialchars($book['author_name']) ?>">
 
-            </div>
+                <input class="border p-2.5 rounded-lg w-full"
+                       name="isbn"
+                       value="<?= htmlspecialchars($book['isbn']) ?>">
 
-            <div class="mb-4">
-
-                <label>Author</label>
-
-                <input
-                    type="text"
-                    name="author_name"
-                    value="<?= htmlspecialchars($book['author_name']) ?>"
-                    class="w-full border p-3 rounded-lg"
-                    required>
+                <input class="border p-2.5 rounded-lg w-full"
+                       name="published_year"
+                       value="<?= $book['published_year'] ?>">
 
             </div>
 
-            <div class="mb-4">
+            <div class="grid grid-cols-2 gap-3 mt-3">
 
-                <label>ISBN</label>
+                <input class="border p-2.5 rounded-lg"
+                       name="total_copies"
+                       value="<?= $book['total_copies'] ?>">
 
-                <input
-                    type="text"
-                    name="isbn"
-                    value="<?= htmlspecialchars($book['isbn']) ?>"
-                    class="w-full border p-3 rounded-lg"
-                    required>
-
-            </div>
-
-            <div class="mb-4">
-
-                <label>Published Year</label>
-
-                <input
-                    type="number"
-                    name="published_year"
-                    value="<?= $book['published_year'] ?>"
-                    class="w-full border p-3 rounded-lg">
+                <input class="border p-2.5 rounded-lg"
+                       name="available_copies"
+                       value="<?= $book['available_copies'] ?>">
 
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="mt-3">
 
-                <div>
-                    <label>Total Copies</label>
+                <select name="category_id"
+                        class="border p-2.5 rounded-lg w-full">
 
-                    <input
-                        type="number"
-                        name="total_copies"
-                        value="<?= $book['total_copies'] ?>"
-                        class="w-full border p-3 rounded-lg">
-                </div>
+                    <?php
+                    $cats = $conn->query("SELECT * FROM categories");
+                    while ($cat = $cats->fetch_assoc()):
+                    ?>
 
-                <div>
-                    <label>Available Copies</label>
-
-                    <input
-                        type="number"
-                        name="available_copies"
-                        value="<?= $book['available_copies'] ?>"
-                        class="w-full border p-3 rounded-lg">
-                </div>
-
-            </div>
-
-            <div class="mt-4">
-
-                <label>Category</label>
-
-                <select
-                    name="category_id"
-                    class="w-full border p-3 rounded-lg">
-
-                    <?php while($cat = $categories->fetch_assoc()): ?>
-
-                        <option
-                            value="<?= $cat['category_id'] ?>"
+                        <option value="<?= $cat['category_id'] ?>"
                             <?= $cat['category_id'] == $book['category_id'] ? 'selected' : '' ?>>
 
-                            <?= htmlspecialchars($cat['category_name']) ?>
-
+                            <?= $cat['category_name'] ?>
                         </option>
 
                     <?php endwhile; ?>
@@ -154,12 +81,19 @@ ORDER BY category_name
 
             </div>
 
-            <button
-                class="mt-6 bg-blue-600 text-white px-5 py-3 rounded-lg">
+            <div class="flex justify-end gap-2 mt-5 border-t pt-4">
 
-                Update Book
+                <a href="index.php"
+                   class="px-4 py-2 border rounded-lg">
+                    Cancel
+                </a>
 
-            </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                    Update
+                </button>
+
+            </div>
 
         </form>
 
@@ -167,5 +101,7 @@ ORDER BY category_name
 
 </div>
 
-</body>
-</html>
+<?php
+$content = ob_get_clean();
+include("../layouts/main_layout.php");
+?>
