@@ -31,11 +31,12 @@ $pageTitle = "User Management";
 ob_start();
 ?>
 
+<!-- HEADER -->
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <div>
         <h1 class="text-xl font-bold text-slate-800">Manage User Accounts</h1>
         <p class="text-sm text-gray-500">
-            Create, view, and manage library staff accounts.
+            Create, edit, activate and deactivate staff accounts.
         </p>
     </div>
 
@@ -46,12 +47,19 @@ ob_start();
     </a>
 </div>
 
-<?php if (isset($_GET["success"]) && $_GET["success"] === "staff_created"): ?>
+<!-- SUCCESS MESSAGE -->
+<?php if (isset($_GET["success"])): ?>
     <div class="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-        Staff account created successfully.
+        <?php
+            if ($_GET["success"] === "staff_created") echo "Staff account created successfully.";
+            if ($_GET["success"] === "user_updated") echo "User updated successfully.";
+            if ($_GET["success"] === "user_deactivated") echo "User deactivated successfully.";
+            if ($_GET["success"] === "user_activated") echo "User activated successfully.";
+        ?>
     </div>
 <?php endif; ?>
 
+<!-- SEARCH -->
 <div class="bg-white rounded-xl shadow p-4 mb-5">
     <form method="GET" class="flex flex-col sm:flex-row gap-3">
         <input
@@ -75,6 +83,7 @@ ob_start();
     </form>
 </div>
 
+<!-- TABLE -->
 <div class="bg-white rounded-xl shadow overflow-x-auto">
     <table class="min-w-full text-sm">
         <thead class="bg-slate-50 text-gray-600">
@@ -85,7 +94,7 @@ ob_start();
                 <th class="text-left px-5 py-4">Phone</th>
                 <th class="text-left px-5 py-4">Role</th>
                 <th class="text-left px-5 py-4">Status</th>
-                <th class="text-left px-5 py-4">Account Type</th>
+                <th class="text-left px-5 py-4">Actions</th>
             </tr>
         </thead>
 
@@ -93,6 +102,7 @@ ob_start();
             <?php if ($users && $users->num_rows > 0): ?>
                 <?php while ($user = $users->fetch_assoc()): ?>
                     <tr class="hover:bg-slate-50">
+
                         <td class="px-5 py-4 text-gray-600">
                             <?php echo $user['user_id']; ?>
                         </td>
@@ -130,9 +140,37 @@ ob_start();
                             <?php endif; ?>
                         </td>
 
-                        <td class="px-5 py-4 text-xs text-gray-500">
-                            <?php echo $user['role'] === 'admin' ? 'Protected Admin' : 'Staff Account'; ?>
+                        <!-- ACTIONS -->
+                        <td class="px-5 py-4 space-x-2">
+
+                            <!-- EDIT -->
+                            <a href="edit.php?id=<?= $user['user_id'] ?>"
+                               class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200">
+                                <i class="fas fa-pen mr-1"></i> Edit
+                            </a>
+
+                            <?php if ($user['is_active']): ?>
+
+                                <!-- DEACTIVATE -->
+                                <a href="deactivate.php?id=<?= $user['user_id'] ?>"
+                                   onclick="return confirm('Deactivate this user?')"
+                                   class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200">
+                                    <i class="fas fa-user-slash mr-1"></i> Deactivate
+                                </a>
+
+                            <?php else: ?>
+
+                                <!-- ACTIVATE -->
+                                <a href="activate.php?id=<?= $user['user_id'] ?>"
+                                    onclick="return confirm('Reactivate this member?');"
+                                    class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200">
+                                    <i class="fas fa-user-check mr-1"></i> Activate
+                                </a>
+
+                            <?php endif; ?>
+
                         </td>
+
                     </tr>
                 <?php endwhile; ?>
             <?php else: ?>
