@@ -149,7 +149,7 @@ function activeSidebarLink($path, $currentPath) {
 
                 <li>
                     <a href="<?= $baseUrl ?>/auth/logout.php"
-                    class="block bg-red-600 hover:bg-red-700 p-3 rounded-lg mt-6">
+                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/auth/logout.php', $currentPath) ?>">
                         <i class="fas fa-sign-out-alt mr-2"></i>
                         Logout
                     </a>
