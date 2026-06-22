@@ -18,11 +18,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($user['is_active'] == 0) {
             $error_message = "Account disabled!";
-        } else if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['full_name'] = $user['full_name']; // ✅ Added: Saves full name to session
+        }  else if (password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['full_name'] = $user['full_name'];
+
+                /* Activity Log: successful login */
+                $log_user_id = (int) $user['user_id'];
+                $action = "User Login";
+                $table_name = "users";
+                $record_id = (int) $user['user_id'];
+                $description = $user['full_name'] . " logged in as " . ucfirst($user['role']) . ".";
+
+                $logSql = "INSERT INTO activity_logs
+                    (user_id, action, table_name, record_id, description)
+                    VALUES (?, ?, ?, ?, ?)";
+
+                $logStmt = $conn->prepare($logSql);
+                $logStmt->bind_param(
+                    "issis",
+                    $log_user_id,
+                    $action,
+                    $table_name,
+                    $record_id,
+                    $description
+                );
+                $logStmt->execute();
 
             if ($user['role'] == 'admin') {
                 header("Location: ../admin/dashboard.php");
