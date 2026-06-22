@@ -10,12 +10,16 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'staf
 $search = trim($_GET['search'] ?? '');
 $statusFilter = $_GET['status'] ?? 'all';
 
-$sql = "SELECT * FROM members WHERE 1=1";
+$membersPerPage = 5;
+$currentPage = max(1, (int)($_GET['page'] ?? 1));
+$offset = ($currentPage - 1) * $membersPerPage;
+
+$whereSql = " WHERE 1=1 ";
 $params = [];
 $types = "";
 
 if ($search !== '') {
-    $sql .= " AND (
+    $whereSql .= " AND (
         student_id LIKE ?
         OR first_name LIKE ?
         OR last_name LIKE ?
@@ -29,17 +33,40 @@ if ($search !== '') {
 }
 
 if ($statusFilter === 'active') {
-    $sql .= " AND is_active = 1";
+    $whereSql .= " AND is_active = 1 ";
 } elseif ($statusFilter === 'inactive') {
-    $sql .= " AND is_active = 0";
+    $whereSql .= " AND is_active = 0 ";
 }
 
-$sql .= " ORDER BY member_id DESC";
+/* Get total number of matching members */
+$countSql = "SELECT COUNT(*) AS total FROM members" . $whereSql;
+$countStmt = $conn->prepare($countSql);
 
+if (!empty($params)) {
+    $countStmt->bind_param($types, ...$params);
+}
+
+$countStmt->execute();
+$totalMembers = (int)$countStmt->get_result()->fetch_assoc()['total'];
+
+$totalPages = max(1, (int)ceil($totalMembers / $membersPerPage));
+
+/* Prevent invalid page numbers */
+if ($currentPage > $totalPages) {
+    $currentPage = $totalPages;
+    $offset = ($currentPage - 1) * $membersPerPage;
+}
+
+/* Get members for the current page */
+$sql = "SELECT * FROM members" . $whereSql . " ORDER BY member_id DESC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 
 if (!empty($params)) {
-    $stmt->bind_param($types, ...$params);
+    $allParams = array_merge($params, [$membersPerPage, $offset]);
+    $allTypes = $types . "ii";
+    $stmt->bind_param($allTypes, ...$allParams);
+} else {
+    $stmt->bind_param("ii", $membersPerPage, $offset);
 }
 
 $stmt->execute();
@@ -75,7 +102,7 @@ ob_start();
             'activated' => 'Member has been reactivated successfully.'
         ];
 
-        echo htmlspecialchars($messages[$_GET['success']] ?? 'Operation completed successfully.');
+        echo htmlspecialchars($messages[$_GET['success']] ?? 'Member added successfully.');
         ?>
     </div>
 <?php endif; ?>
@@ -85,8 +112,16 @@ ob_start();
         <?php
         $errors = [
             'duplicate_student_id' => 'This student ID already exists.',
-            'invalid_request' => 'Invalid request.',
-            'cannot_activate' => 'Only an admin can reactivate a member.'
+            'invalid_request' => 'Something went wrong. Please try again.',
+            'cannot_activate' => 'Only an admin can reactivate a member.',
+
+            'required_fields' => 'Student ID, first name, and last name are required.',
+            'invalid_student_id' => 'Student ID must be 3–50 characters and contain only letters, numbers, and hyphens.',
+            'invalid_first_name' => 'First name must be 2–100 characters and contain letters and spaces only.',
+            'invalid_last_name' => 'Last name must be 2–100 characters and contain letters and spaces only.',
+            'invalid_department' => 'Department can contain only letters, numbers, spaces, ampersand, and hyphens.',
+            'invalid_email' => 'Please enter a valid email address.',
+            'invalid_phone' => 'Phone number must be exactly 11 digits and start with 01.'
         ];
 
         echo htmlspecialchars($errors[$_GET['error']] ?? 'Something went wrong. Please try again.');
@@ -211,6 +246,64 @@ ob_start();
         </tbody>
     </table>
 </div>
+
+<?php if ($totalMembers > 0): ?>
+    <?php
+    $queryParams = [];
+
+    if ($search !== '') {
+        $queryParams['search'] = $search;
+    }
+
+    if ($statusFilter !== 'all') {
+        $queryParams['status'] = $statusFilter;
+    }
+
+    function memberPageUrl($page, $queryParams) {
+        $queryParams['page'] = $page;
+        return 'index.php?' . http_build_query($queryParams);
+    }
+
+    $startMember = $offset + 1;
+    $endMember = min($offset + $membersPerPage, $totalMembers);
+    ?>
+
+    <div class="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <p class="text-sm text-gray-500">
+            Showing <?= $startMember ?> to <?= $endMember ?> of <?= $totalMembers ?> members
+        </p>
+
+        <div class="flex flex-wrap items-center gap-2">
+
+            <?php if ($currentPage > 1): ?>
+                <a href="<?= memberPageUrl($currentPage - 1, $queryParams) ?>"
+                   class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </a>
+            <?php endif; ?>
+
+            <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+                <a href="<?= memberPageUrl($page, $queryParams) ?>"
+                   class="min-w-10 text-center px-3 py-2 rounded-lg text-sm font-medium
+                   <?= $page === $currentPage
+                        ? 'bg-blue-600 text-white'
+                        : 'border border-gray-300 text-gray-700 hover:bg-gray-100' ?>">
+                    <?= $page ?>
+                </a>
+            <?php endfor; ?>
+
+            <?php if ($currentPage < $totalPages): ?>
+                <a href="<?= memberPageUrl($currentPage + 1, $queryParams) ?>"
+                   class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-100">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            <?php endif; ?>
+
+        </div>
+    </div>
+<?php endif; ?>
 
 <?php
 $content = ob_get_clean();

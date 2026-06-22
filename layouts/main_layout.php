@@ -8,6 +8,13 @@ $pageTitle = $pageTitle ?? "ULMS";
 $content = $content ?? "";
 
 $baseUrl = "/university-library-management-system";
+
+$currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+function activeSidebarLink($path, $currentPath) {
+    return str_contains($currentPath, $path)
+        ? "bg-blue-700 text-white shadow"
+        : "text-slate-200 hover:bg-blue-700";
+}
 ?>
 
 <!DOCTYPE html>
@@ -74,7 +81,7 @@ $baseUrl = "/university-library-management-system";
 
                 <li>
                     <a href="<?= $baseUrl ?>/<?= htmlspecialchars($_SESSION['role'] ?? '') ?>/dashboard.php"
-                    class="sidebar-link block p-3 rounded-lg">
+                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/' . ($_SESSION['role'] ?? '') . '/dashboard.php', $currentPath) ?>">
                         <i class="fas fa-chart-line mr-2"></i>
                         Dashboard
                     </a>
@@ -84,7 +91,7 @@ $baseUrl = "/university-library-management-system";
 
                     <li>
                         <a href="<?= $baseUrl ?>/admin/users/index.php"
-                        class="sidebar-link block p-3 rounded-lg">
+                        class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/admin/users/', $currentPath) ?>">
                             <i class="fas fa-users-cog mr-2"></i>
                             User Management
                         </a>
@@ -94,7 +101,7 @@ $baseUrl = "/university-library-management-system";
 
                 <li>
                     <a href="<?= $baseUrl ?>/books/index.php"
-                    class="sidebar-link block p-3 rounded-lg">
+                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/books/', $currentPath) ?>">
                         <i class="fas fa-book mr-2"></i>
                         Books
                     </a>
@@ -102,7 +109,7 @@ $baseUrl = "/university-library-management-system";
 
                 <li>
                     <a href="<?= $baseUrl ?>/categories/index.php"
-                    class="sidebar-link block p-3 rounded-lg">
+                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/categories/', $currentPath) ?>">
                         <i class="fas fa-tags mr-2"></i>
                         Categories
                     </a>
@@ -110,7 +117,7 @@ $baseUrl = "/university-library-management-system";
 
                 <li>
                     <a href="<?= $baseUrl ?>/members/index.php"
-                    class="sidebar-link block p-3 rounded-lg">
+                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/members/', $currentPath) ?>">
                         <i class="fas fa-user-graduate mr-2"></i>
                         Members
                     </a>
@@ -118,7 +125,7 @@ $baseUrl = "/university-library-management-system";
 
                 <li>
                     <a href="<?= $baseUrl ?>/issues/index.php"
-                    class="sidebar-link block p-3 rounded-lg">
+                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/issues/', $currentPath) ?>">
                         <i class="fas fa-exchange-alt mr-2"></i>
                         Book Issues
                     </a>
@@ -126,16 +133,15 @@ $baseUrl = "/university-library-management-system";
 
                 <li>
                     <a href="<?= $baseUrl ?>/reports/index.php"
-                    class="sidebar-link block p-3 rounded-lg">
+                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/reports/', $currentPath) ?>">
                         <i class="fas fa-chart-bar mr-2"></i>
                         Reports
                     </a>
                 </li>
 
-                <!-- Teacher requirement: both Admin and Staff may view logs -->
                 <li>
                     <a href="<?= $baseUrl ?>/activity_logs/index.php"
-                    class="sidebar-link block p-3 rounded-lg">
+                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/activity_logs/', $currentPath) ?>">
                         <i class="fas fa-history mr-2"></i>
                         Activity Logs
                     </a>
@@ -143,7 +149,7 @@ $baseUrl = "/university-library-management-system";
 
                 <li>
                     <a href="<?= $baseUrl ?>/auth/logout.php"
-                    class="block bg-red-600 hover:bg-red-700 p-3 rounded-lg mt-6">
+                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/auth/logout.php', $currentPath) ?>">
                         <i class="fas fa-sign-out-alt mr-2"></i>
                         Logout
                     </a>

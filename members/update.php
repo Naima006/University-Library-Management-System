@@ -20,6 +20,16 @@ $department = trim($_POST['department'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
 
+if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    header("Location: index.php?error=invalid_email");
+    exit;
+}
+
+if ($phone !== '' && (!ctype_digit($phone) || strlen($phone) > 11)) {
+    header("Location: index.php?error=invalid_phone");
+    exit;
+}
+
 if ($member_id <= 0 || $student_id === '' || $first_name === '' || $last_name === '') {
     header("Location: index.php?error=invalid_request");
     exit;
