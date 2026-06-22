@@ -3,6 +3,11 @@
 session_start();
 include("../config/db.php");
 
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'staff'])) {
+    header("Location: ../auth/login.php");
+    exit;
+}
+
 $search = trim($_GET['search'] ?? '');
 
 $allowed_limits = [10, 25, 50, 100];
@@ -169,25 +174,40 @@ ob_start();
 
     </div>
     <!-- TOAST -->
-<?php if (isset($_GET['success'])): ?>
+    <?php if (isset($_GET['success'])): ?>
 
-    <div class="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        <div class="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
 
-        <?php
-        $messages = [
-            'created' => 'Book added successfully.',
-            'updated' => 'Book updated successfully.',
-            'deleted' => 'Book deleted successfully.'
-        ];
+            <?php
+            $messages = [
+                'created' => 'Book added successfully.',
+                'updated' => 'Book updated successfully.',
+                'deleted' => 'Book deleted successfully.'
+            ];
 
-        $key = $_GET['success'];
+            $key = $_GET['success'];
 
-        echo htmlspecialchars($messages[$key] ?? 'Operation completed successfully.');
-        ?>
+            echo htmlspecialchars($messages[$key] ?? 'Operation completed successfully.');
+            ?>
 
-    </div>
+        </div>
 
-<?php endif; ?>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <?php
+            $errors = [
+                'book_currently_issued' => 'This book cannot be deleted because it is currently issued or overdue.',
+                'book_not_found' => 'Book not found.',
+                'delete_failed' => 'Book could not be deleted.',
+                'invalid_data' => 'Invalid book information submitted.'
+            ];
+
+            echo htmlspecialchars($errors[$_GET['error']] ?? 'An error occurred.');
+            ?>
+        </div>
+    <?php endif; ?>
 
 
     <!-- TABLE -->
@@ -312,12 +332,13 @@ ob_start();
 function deleteBook(id) {
     Swal.fire({
         title: 'Delete Book?',
-        text: "This action cannot be undone!",
+        html: "This permanently removes the book from the system.<br><br><span class='text-sm text-amber-600 font-medium'>⚠️ Note: Books currently issued to members cannot be deleted.</span>",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc2626',
         cancelButtonColor: '#64748b',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = 'delete.php?id=' + id;
