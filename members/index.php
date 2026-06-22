@@ -102,7 +102,7 @@ ob_start();
             'activated' => 'Member has been reactivated successfully.'
         ];
 
-        echo htmlspecialchars($messages[$_GET['success']] ?? 'Operation completed successfully.');
+        echo htmlspecialchars($messages[$_GET['success']] ?? 'Member added successfully.');
         ?>
     </div>
 <?php endif; ?>
@@ -112,8 +112,16 @@ ob_start();
         <?php
         $errors = [
             'duplicate_student_id' => 'This student ID already exists.',
-            'invalid_request' => 'Invalid request.',
-            'cannot_activate' => 'Only an admin can reactivate a member.'
+            'invalid_request' => 'Something went wrong. Please try again.',
+            'cannot_activate' => 'Only an admin can reactivate a member.',
+
+            'required_fields' => 'Student ID, first name, and last name are required.',
+            'invalid_student_id' => 'Student ID must be 3–50 characters and contain only letters, numbers, and hyphens.',
+            'invalid_first_name' => 'First name must be 2–100 characters and contain letters and spaces only.',
+            'invalid_last_name' => 'Last name must be 2–100 characters and contain letters and spaces only.',
+            'invalid_department' => 'Department can contain only letters, numbers, spaces, ampersand, and hyphens.',
+            'invalid_email' => 'Please enter a valid email address.',
+            'invalid_phone' => 'Phone number must be exactly 11 digits and start with 01.'
         ];
 
         echo htmlspecialchars($errors[$_GET['error']] ?? 'Something went wrong. Please try again.');
