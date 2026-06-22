@@ -7,6 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $pageTitle = $pageTitle ?? "ULMS";
 $content = $content ?? "";
 
+$baseUrl = "/university-library-management-system";
 ?>
 
 <!DOCTYPE html>
@@ -72,76 +73,77 @@ $content = $content ?? "";
             <ul class="space-y-2">
 
                 <li>
-                    <a href="dashboard.php"
-                       class="sidebar-link block p-3 rounded-lg">
+                    <a href="<?= $baseUrl ?>/<?= htmlspecialchars($_SESSION['role'] ?? '') ?>/dashboard.php"
+                    class="sidebar-link block p-3 rounded-lg">
                         <i class="fas fa-chart-line mr-2"></i>
                         Dashboard
                     </a>
                 </li>
 
-                <?php if ($_SESSION['role'] == 'admin'): ?>
+                <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
 
                     <li>
-                        <a href="../admin/users/index.php"
-                           class="sidebar-link block p-3 rounded-lg">
+                        <a href="<?= $baseUrl ?>/admin/users/index.php"
+                        class="sidebar-link block p-3 rounded-lg">
                             <i class="fas fa-users-cog mr-2"></i>
-                            Staff Management
+                            User Management
                         </a>
                     </li>
 
                 <?php endif; ?>
 
                 <li>
-                    <a href="../books/index.php"
-                       class="sidebar-link block p-3 rounded-lg">
+                    <a href="<?= $baseUrl ?>/books/index.php"
+                    class="sidebar-link block p-3 rounded-lg">
                         <i class="fas fa-book mr-2"></i>
                         Books
                     </a>
                 </li>
 
                 <li>
-                    <a href="../categories/index.php"
-                       class="sidebar-link block p-3 rounded-lg">
+                    <a href="<?= $baseUrl ?>/categories/index.php"
+                    class="sidebar-link block p-3 rounded-lg">
                         <i class="fas fa-tags mr-2"></i>
                         Categories
                     </a>
                 </li>
 
                 <li>
-                    <a href="../members/index.php"
-                       class="sidebar-link block p-3 rounded-lg">
+                    <a href="<?= $baseUrl ?>/members/index.php"
+                    class="sidebar-link block p-3 rounded-lg">
                         <i class="fas fa-user-graduate mr-2"></i>
                         Members
                     </a>
                 </li>
 
                 <li>
-                    <a href="../issues/index.php"
-                       class="sidebar-link block p-3 rounded-lg">
+                    <a href="<?= $baseUrl ?>/issues/index.php"
+                    class="sidebar-link block p-3 rounded-lg">
                         <i class="fas fa-exchange-alt mr-2"></i>
                         Book Issues
                     </a>
                 </li>
 
                 <li>
-                    <a href="../reports/index.php"
-                       class="sidebar-link block p-3 rounded-lg">
+                    <a href="<?= $baseUrl ?>/reports/index.php"
+                    class="sidebar-link block p-3 rounded-lg">
                         <i class="fas fa-chart-bar mr-2"></i>
                         Reports
                     </a>
                 </li>
 
+                <!-- Teacher requirement: both Admin and Staff may view logs -->
                 <li>
-                    <a href="../activity_logs/index.php"
-                       class="sidebar-link block p-3 rounded-lg">
+                    <a href="<?= $baseUrl ?>/activity_logs/index.php"
+                    class="sidebar-link block p-3 rounded-lg">
                         <i class="fas fa-history mr-2"></i>
                         Activity Logs
                     </a>
                 </li>
 
                 <li>
-                    <a href="../auth/logout.php"
-                       class="block bg-red-600 hover:bg-red-700 p-3 rounded-lg mt-6">
+                    <a href="<?= $baseUrl ?>/auth/logout.php"
+                    class="block bg-red-600 hover:bg-red-700 p-3 rounded-lg mt-6">
                         <i class="fas fa-sign-out-alt mr-2"></i>
                         Logout
                     </a>
