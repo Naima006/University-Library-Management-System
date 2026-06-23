@@ -10,6 +10,7 @@ $content = $content ?? "";
 $baseUrl = "/university-library-management-system";
 
 $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
 function activeSidebarLink($path, $currentPath) {
     return str_contains($currentPath, $path)
         ? "bg-blue-700 text-white shadow"
@@ -47,18 +48,38 @@ function activeSidebarLink($path, $currentPath) {
 
 <body>
 
-<div class="flex min-h-screen">
+<div class="min-h-screen bg-slate-900 lg:flex">
+
+    <!-- Mobile overlay -->
+    <div id="overlay"
+         class="fixed inset-0 bg-black/50 hidden lg:hidden z-40"
+         onclick="toggleSidebar()"></div>
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-slate-900 text-white fixed left-0 top-0 h-screen">
+    <aside id="sidebar"
+        class="w-64 bg-slate-900 text-white fixed lg:absolute lg:left-0 lg:top-0 lg:bottom-0
+            left-0 top-0 h-full min-h-screen
+            transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50">
 
-        <div class="p-5 border-b border-slate-700">
-            <h1 class="text-2xl font-bold">
-                📚 ULMS
-            </h1>
-            <p class="text-sm text-slate-400">
-                Library Management
-            </p>
+        <div class="p-5 border-b border-slate-700 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold">
+                    📚 ULMS
+                </h1>
+                <p class="text-sm text-slate-400">
+                    Library Management
+                </p>
+            </div>
+
+            <!-- Close button (mobile only) -->
+            <button
+                type="button"
+                class="lg:hidden text-white text-xl"
+                onclick="toggleSidebar()"
+                aria-label="Close navigation menu">
+
+                <i class="fas fa-times"></i>
+            </button>
         </div>
 
         <div class="p-4">
@@ -88,7 +109,6 @@ function activeSidebarLink($path, $currentPath) {
                 </li>
 
                 <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
-
                     <li>
                         <a href="<?= $baseUrl ?>/admin/users/index.php"
                         class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/admin/users/', $currentPath) ?>">
@@ -96,7 +116,6 @@ function activeSidebarLink($path, $currentPath) {
                             User Management
                         </a>
                     </li>
-
                 <?php endif; ?>
 
                 <li>
@@ -162,29 +181,50 @@ function activeSidebarLink($path, $currentPath) {
     </aside>
 
     <!-- Main Content -->
-    <main class="ml-64 w-full">
+    <main class="w-full lg:ml-64 bg-slate-50 min-h-screen">
 
         <!-- Topbar -->
-        <div class="bg-white shadow p-5 flex justify-between items-center">
+        <div class="bg-white shadow p-4 lg:p-5 flex justify-between items-center gap-3">
 
-            <h2 class="text-2xl font-bold text-slate-800">
+            <!-- Mobile menu button -->
+            <button
+                type="button"
+                class="lg:hidden text-slate-800 text-xl shrink-0"
+                onclick="toggleSidebar()"
+                aria-label="Open navigation menu">
+
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-slate-800 truncate">
                 <?= $pageTitle ?>
             </h2>
 
-            <div>
+            <div class="text-sm text-gray-600 hidden sm:block whitespace-nowrap">
                 <?= date("d M Y") ?>
             </div>
 
         </div>
 
-        <div class="p-6">
+        <div class="p-4 lg:p-6">
             <?= $content ?>
         </div>
 
     </main>
 
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+}
+</script>
 
 </body>
 </html>

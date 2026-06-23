@@ -123,7 +123,7 @@ ob_start();
            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow flex items-center gap-2">
 
             <i class="fas fa-plus"></i>
-            Add Book
+            Add New Book
         </a>
 
     </div>
