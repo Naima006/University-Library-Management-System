@@ -292,8 +292,35 @@ ob_start();
                             <?= $log['record_id'] ? '#' . $log['record_id'] : '-' ?>
                         </td>
 
-                        <td class="px-5 py-4 text-gray-600 max-w-xs">
-                            <?= htmlspecialchars($log['description'] ?? '-') ?>
+                        <td class="px-5 py-4 text-gray-600 w-72 min-w-[18rem]">
+                            <?php
+                                $description = $log['description'] ?? '-';
+                                $descriptionLimit = 50;
+                                $isLongDescription = strlen($description) > $descriptionLimit;
+                                $shortDescription = $isLongDescription
+                                    ? substr($description, 0, $descriptionLimit) . '...'
+                                    : $description;
+                            ?>
+
+                            <div>
+                                <span id="short-description-<?= $log['log_id'] ?>">
+                                    <?= htmlspecialchars($shortDescription) ?>
+                                </span>
+
+                                <?php if ($isLongDescription): ?>
+                                    <span id="full-description-<?= $log['log_id'] ?>" class="hidden">
+                                        <?= htmlspecialchars($description) ?>
+                                    </span>
+
+                                    <button
+                                        type="button"
+                                        id="read-more-btn-<?= $log['log_id'] ?>"
+                                        onclick="toggleDescription(<?= $log['log_id'] ?>)"
+                                        class="mt-2 text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline">
+                                        Read more
+                                    </button>
+                                <?php endif; ?>
+                            </div>
                         </td>
 
                         <td class="px-5 py-4 text-gray-600 whitespace-nowrap">
@@ -379,6 +406,24 @@ ob_start();
         </div>
     </div>
 <?php endif; ?>
+
+<script>
+function toggleDescription(logId) {
+    const shortDescription = document.getElementById('short-description-' + logId);
+    const fullDescription = document.getElementById('full-description-' + logId);
+    const button = document.getElementById('read-more-btn-' + logId);
+
+    if (fullDescription.classList.contains('hidden')) {
+        shortDescription.classList.add('hidden');
+        fullDescription.classList.remove('hidden');
+        button.textContent = 'Show less';
+    } else {
+        fullDescription.classList.add('hidden');
+        shortDescription.classList.remove('hidden');
+        button.textContent = 'Read more';
+    }
+}
+</script>
 
 <?php
 $content = ob_get_clean();
