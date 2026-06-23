@@ -14,7 +14,7 @@ if ($member_id <= 0) {
     exit;
 }
 
-$stmt = $conn->prepare("SELECT * FROM members WHERE member_id = ?");
+$stmt = $conn->prepare("SELECT * FROM members WHERE member_id = ? AND is_deleted = 0");
 $stmt->bind_param("i", $member_id);
 $stmt->execute();
 

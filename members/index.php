@@ -14,7 +14,11 @@ $membersPerPage = 5;
 $currentPage = max(1, (int)($_GET['page'] ?? 1));
 $offset = ($currentPage - 1) * $membersPerPage;
 
-$whereSql = " WHERE 1=1 ";
+/*
+    Soft-deleted members must remain hidden from both
+    admin and staff member-management UI.
+*/
+$whereSql = " WHERE is_deleted = 0 ";
 $params = [];
 $types = "";
 
@@ -38,7 +42,7 @@ if ($statusFilter === 'active') {
     $whereSql .= " AND is_active = 0 ";
 }
 
-/* Get total number of matching members */
+/* Get total number of matching non-deleted members */
 $countSql = "SELECT COUNT(*) AS total FROM members" . $whereSql;
 $countStmt = $conn->prepare($countSql);
 
@@ -57,7 +61,7 @@ if ($currentPage > $totalPages) {
     $offset = ($currentPage - 1) * $membersPerPage;
 }
 
-/* Get members for the current page */
+/* Get non-deleted members for the current page */
 $sql = "SELECT * FROM members" . $whereSql . " ORDER BY member_id DESC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 
@@ -99,7 +103,8 @@ ob_start();
             'created' => 'Member added successfully.',
             'updated' => 'Member information updated successfully.',
             'deactivated' => 'Member has been marked as inactive.',
-            'activated' => 'Member has been reactivated successfully.'
+            'activated' => 'Member has been reactivated successfully.',
+            'deleted' => 'Member deleted successfully.'
         ];
 
         echo htmlspecialchars($messages[$_GET['success']] ?? 'Member added successfully.');
@@ -211,7 +216,7 @@ ob_start();
                         </td>
 
                         <td class="px-5 py-4">
-                            <div class="flex items-center justify-center gap-2">
+                            <div class="flex flex-wrap items-center justify-center gap-2">
 
                                 <a href="edit.php?id=<?= $member['member_id'] ?>"
                                    class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200">
@@ -221,7 +226,7 @@ ob_start();
                                 <?php if ($member['is_active']): ?>
                                     <a href="delete.php?id=<?= $member['member_id'] ?>"
                                        onclick="return confirm('Mark this member as inactive? This will not permanently delete their record.');"
-                                       class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200">
+                                       class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-orange-100 text-orange-700 hover:bg-orange-200">
                                         <i class="fas fa-user-slash mr-1"></i> Deactivate
                                     </a>
                                 <?php elseif ($_SESSION['role'] === 'admin'): ?>
@@ -231,6 +236,12 @@ ob_start();
                                         <i class="fas fa-user-check mr-1"></i> Reactivate
                                     </a>
                                 <?php endif; ?>
+
+                                <a href="soft_delete.php?id=<?= $member['member_id'] ?>"
+                                   onclick="return confirm('Delete this member? The member will disappear from the Admin and Staff UI, but the record will remain safely stored in the database.');"
+                                   class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200">
+                                    <i class="fas fa-trash mr-1"></i> Delete
+                                </a>
 
                             </div>
                         </td>

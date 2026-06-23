@@ -3,8 +3,8 @@ session_start();
 include("../config/db.php");
 include("../config/activity_log.php");
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: index.php?error=cannot_activate");
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'staff'])) {
+    header("Location: ../auth/login.php");
     exit;
 }
 
@@ -15,12 +15,17 @@ if ($member_id <= 0) {
     exit;
 }
 
-/* A deleted member must never be reactivated */
+/* Get member details before hiding the member from the UI */
 $getMember = $conn->prepare(
     "SELECT first_name, last_name, student_id
      FROM members
      WHERE member_id = ? AND is_deleted = 0"
 );
+
+if (!$getMember) {
+    header("Location: index.php?error=invalid_request");
+    exit;
+}
 
 $getMember->bind_param("i", $member_id);
 $getMember->execute();
@@ -32,19 +37,30 @@ if (!$member) {
     exit;
 }
 
+/*
+    Soft delete:
+    The record stays in the database,
+    but is hidden from both Admin and Staff UI.
+*/
 $stmt = $conn->prepare(
     "UPDATE members
-     SET is_active = 1
-     WHERE member_id = ? AND is_deleted = 0"
+     SET is_deleted = 1
+     WHERE member_id = ?"
 );
+
+if (!$stmt) {
+    header("Location: index.php?error=invalid_request");
+    exit;
+}
 
 $stmt->bind_param("i", $member_id);
 
 if ($stmt->execute()) {
+
     $user_id = (int)$_SESSION['user_id'];
-    $action = "Reactivated member";
+    $action = "Deleted member";
     $table_name = "members";
-    $description = "Reactivated member: {$member['first_name']} {$member['last_name']} (Student ID: {$member['student_id']})";
+    $description = "Soft deleted member: {$member['first_name']} {$member['last_name']} (Student ID: {$member['student_id']})";
 
     addActivityLog(
         $conn,
@@ -55,7 +71,7 @@ if ($stmt->execute()) {
         $description
     );
 
-    header("Location: index.php?success=activated");
+    header("Location: index.php?success=deleted");
     exit;
 }
 
