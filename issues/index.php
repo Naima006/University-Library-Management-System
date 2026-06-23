@@ -156,47 +156,69 @@ $pageTitle = "Book Issues";
 ob_start();
 ?>
 
-<div class="max-w-7xl mx-auto p-6">
+<div id="printArea" class="max-w-7xl mx-auto p-6">
 
-    <!-- HEADER -->
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+    <div class="print-header hidden mb-8 pb-4 border-b-2 border-slate-800">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold uppercase tracking-wider text-slate-900">University Library System</h1>
+            <div class="flex justify-between items-center mt-6 text-xs text-gray-500 font-medium">
+                <p><strong>Report Title:</strong> Book Issues Inventory Log</p>
+                <p><strong>Generated On:</strong> <?= date('d M Y') ?></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 no-print">
 
         <div>
             <h1 class="text-3xl font-bold text-slate-800">Book Issues</h1>
             <p class="text-gray-500">Manage all issued books</p>
         </div>
 
-        <a href="create.php"
-           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow flex items-center gap-2">
+        <div class="flex gap-3 no-print">
 
-            <i class="fas fa-plus"></i>
-            Issue Book
-        </a>
+            <button
+                onclick="printIssuesReport()"
+                type="button"
+                class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg shadow flex items-center gap-2">
+
+                <i class="fas fa-print"></i>
+                Print PDF
+
+            </button>
+
+            <a href="create.php"
+               class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow flex items-center gap-2">
+
+                <i class="fas fa-plus"></i>
+                Issue Book
+
+            </a>
+
+        </div>
 
     </div>
 
-    <!-- STATS -->
-    <div class="grid md:grid-cols-3 gap-5 mb-6">
+    <div class="grid md:grid-cols-3 gap-5 mb-6 print-stats">
 
-        <div class="bg-white rounded-xl shadow p-5">
+        <div class="bg-white rounded-xl shadow p-5 border border-gray-100">
             <p class="text-gray-500">Active Issues</p>
             <h2 class="text-3xl font-bold text-blue-600"><?= $totalIssued ?></h2>
         </div>
 
-        <div class="bg-white rounded-xl shadow p-5">
+        <div class="bg-white rounded-xl shadow p-5 border border-gray-100">
             <p class="text-gray-500">Returned</p>
             <h2 class="text-3xl font-bold text-green-600"><?= $totalReturned ?></h2>
         </div>
 
-        <div class="bg-white rounded-xl shadow p-5">
+        <div class="bg-white rounded-xl shadow p-5 border border-gray-100">
             <p class="text-gray-500">Overdue</p>
             <h2 class="text-3xl font-bold text-red-600"><?= $totalOverdue ?></h2>
         </div>
 
     </div>
 
-    <!-- SEARCH + FILTER (BOOK STYLE) -->
-    <div class="bg-white rounded-xl shadow p-4 mb-5">
+    <div class="bg-white rounded-xl shadow p-4 mb-5 no-print">
 
         <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-3">
 
@@ -224,14 +246,14 @@ ob_start();
 
                 <button class="flex-1 bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2">
 
-    <i class="fas fa-search"></i>
-    <span>Search</span>
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
 
-</button>
+                </button>
 
                 <a href="index.php"
                    class="border px-4 py-2.5 rounded-lg text-center">
-                    Reset
+                     Reset
                 </a>
 
             </div>
@@ -240,26 +262,25 @@ ob_start();
 
     </div>
 
-    <!-- TABLE -->
-    <div class="bg-white rounded-xl shadow overflow-hidden">
+    <div class="bg-white rounded-xl shadow overflow-hidden print-table-container">
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto print-overflow-override">
 
-            <table class="min-w-full">
+            <table class="min-w-full print-table">
 
-                <thead class="bg-slate-800 text-white">
-<tr>
-    <th class="px-6 py-4 text-left">Book</th>
-    <th class="px-6 py-4 text-left">Member</th>
-    <th class="px-6 py-4 text-left">Issued By</th>
-    <th class="px-6 py-4 text-center">Issue Date</th>
-    <th class="px-6 py-4 text-center">Due Date</th>
-    <th class="px-6 py-4 text-center">Return Date</th>
-    <th class="px-6 py-4 text-center">Fine</th>
-    <th class="px-6 py-4 text-center">Status</th>
-    <th class="px-6 py-4 text-center">Actions</th>
-</tr>
-</thead>
+                <thead class="bg-slate-800 text-white print-thead">
+                    <tr>
+                        <th class="px-4 py-3 text-left col-book">Book</th>
+                        <th class="px-4 py-3 text-left col-member">Member</th>
+                        <th class="px-4 py-3 text-left col-staff">Issued By</th>
+                        <th class="px-4 py-3 text-center col-date">Issue Date</th>
+                        <th class="px-4 py-3 text-center col-date">Due Date</th>
+                        <th class="px-4 py-3 text-center col-date">Return Date</th>
+                        <th class="px-4 py-3 text-right col-fine">Fine</th>
+                        <th class="px-4 py-3 text-center col-status">Status</th>
+                        <th class="px-6 py-4 text-center no-print">Actions</th>
+                    </tr>
+                </thead>
 
                 <tbody>
 
@@ -273,119 +294,76 @@ ob_start();
                         };
                         ?>
 
-                        <tr class="border-b hover:bg-slate-50">
+                        <tr class="border-b hover:bg-slate-50 print-row">
 
-                            <td class="px-5 py-4 align-top">
+                            <td class="px-4 py-3 align-top">
+                                <div class="font-medium text-slate-800 break-words line-clamp-override">
+                                    <?= htmlspecialchars($row['title']) ?>
+                                </div>
+                            </td>
 
-    <div class="font-medium text-slate-800 break-words">
+                            <td class="px-4 py-3 align-top">
+                                <div class="break-words">
+                                    <?= htmlspecialchars($row['member_name']) ?>
+                                </div>
+                            </td>
 
-        <?= htmlspecialchars($row['title']) ?>
+                            <td class="px-4 py-3 align-top">
+                                <div class="break-words">
+                                    <?= htmlspecialchars($row['staff_name']) ?>
+                                </div>
+                            </td>
 
-    </div>
+                            <td class="px-4 py-3 text-center whitespace-nowrap align-top">
+                                <?= date('d M Y', strtotime($row['issue_date'])) ?>
+                            </td>
 
-</td>
-                            <td class="px-5 py-4 align-top">
+                            <td class="px-4 py-3 text-center whitespace-nowrap align-top">
+                                <?= date('d M Y', strtotime($row['due_date'])) ?>
+                            </td>
 
-    <div class="break-words">
+                            <td class="px-4 py-3 text-center whitespace-nowrap align-top">
+                                <?php if(!empty($row['return_date'])): ?>
+                                    <?= date('d M Y', strtotime($row['return_date'])) ?>
+                                <?php else: ?>
+                                    <span class="text-gray-400 print-dash">-</span>
+                                <?php endif; ?>
+                            </td>
 
-        <?= htmlspecialchars($row['member_name']) ?>
+                            <td class="px-4 py-3 text-right whitespace-nowrap font-medium align-top">
+                                <?php if($row['fine_amount'] > 0): ?>
+                                    <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs print-fine">
+                                        ৳<?= number_format($row['fine_amount'], 2) ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="text-gray-500 print-fine-zero">
+                                        ৳0.00
+                                    </span>
+                                <?php endif; ?>
+                            </td>
 
-    </div>
+                            <td class="px-4 py-3 text-center align-top">
+                                <span class="<?= $badge ?> px-2 py-0.5 rounded-full text-xs whitespace-nowrap print-status-badge">
+                                    <?= ucfirst($row['status']) ?>
+                                </span>
+                            </td>
 
-</td>
-                            <td class="px-6 py-4 align-top">
-
-    <div class="break-words">
-
-        <?= htmlspecialchars($row['staff_name']) ?>
-
-    </div>
-
-</td>
-
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-    <?= date('d M Y', strtotime($row['issue_date'])) ?>
-</td>
-
-<td class="px-6 py-4 text-center whitespace-nowrap">
-    <?= date('d M Y', strtotime($row['due_date'])) ?>
-</td>
-
-<td class="px-6 py-4 text-center whitespace-nowrap">
-
-    <?php if(!empty($row['return_date'])): ?>
-
-        <?= date('d M Y', strtotime($row['return_date'])) ?>
-
-    <?php else: ?>
-
-        <span class="text-gray-400">-</span>
-
-    <?php endif; ?>
-
-</td>
-
-<td class="px-6 py-4 text-center whitespace-nowrap">
-
-    <?php if($row['fine_amount'] > 0): ?>
-
-        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
-
-            ৳<?= number_format($row['fine_amount'], 2) ?>
-
-        </span>
-
-    <?php else: ?>
-
-        <span class="text-gray-500">
-
-            ৳0.00
-
-        </span>
-
-    <?php endif; ?>
-
-</td>
-
-                        <td class="px-6 py-4 text-center">
-
-    <span class="<?= $badge ?> px-3 py-1 rounded-full text-sm whitespace-nowrap">
-
-        <?= ucfirst($row['status']) ?>
-
-    </span>
-
-</td>
-
-                            <td class="px-6 py-4">
-
-    <div class="flex justify-center items-center">
-
-        <?php if ($row['status'] !== 'returned'): ?>
-
-            <a href="return.php?id=<?= $row['issue_id'] ?>"
-               title="Return Book"
-               class="text-green-600 hover:text-green-800 text-xl">
-
-                <i class="fas fa-rotate-left"></i>
-
-            </a>
-
-        <?php else: ?>
-
-            <span
-                title="Book Returned"
-                class="text-gray-400 text-xl">
-
-                <i class="fas fa-check-circle"></i>
-
-            </span>
-
-        <?php endif; ?>
-
-    </div>
-
-</td>
+                            <td class="px-6 py-4 no-print">
+                                <div class="flex justify-center items-center">
+                                    <?php if ($row['status'] !== 'returned'): ?>
+                                        <a href="return.php?id=<?= $row['issue_id'] ?>"
+                                           title="Return Book"
+                                           class="text-green-600 hover:text-green-800 text-xl">
+                                            <i class="fas fa-rotate-left"></i>
+                                        </a>
+                                    <?php else: ?>
+                                        <span title="Book Returned"
+                                              class="text-gray-400 text-xl">
+                                            <i class="fas fa-check-circle"></i>
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
 
                         </tr>
 
@@ -398,8 +376,7 @@ ob_start();
         </div>
     </div>
 
-    <!-- PAGINATION -->
-    <div class="flex justify-between mt-5">
+    <div class="flex justify-between mt-5 no-print">
 
         <div>
             Page <?= $page ?> of <?= $total_pages ?>
@@ -426,6 +403,156 @@ ob_start();
     </div>
 
 </div>
+
+<style>
+@media print {
+    /* Hide scrollbars and unneeded components globally */
+    body * {
+        visibility: hidden;
+    }
+
+    #printArea,
+    #printArea * {
+        visibility: visible;
+    }
+
+    /* Standard A4 full page alignment setup */
+    #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .print-header {
+        display: block !important;
+    }
+
+    /* Stats container row alignment configuration */
+    .print-stats {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 1.25rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .print-stats div {
+        border: 1px solid #e2e8f0 !important;
+        padding: 1rem !important;
+        border-radius: 0.375rem !important;
+        background: #fff !important;
+    }
+
+    .print-stats p {
+        color: #475569 !important;
+        font-size: 0.875rem !important;
+    }
+
+    .print-stats h2 {
+        font-size: 1.5rem !important;
+        margin-top: 0.25rem !important;
+        color: #000 !important;
+    }
+
+    /* Complete correction of table overflow and widths */
+    .print-table-container {
+        border: 1px solid #94a3b8 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    .print-overflow-override {
+        overflow: visible !important;
+    }
+
+    .print-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+    }
+
+    /* Proportional Column Allocation for exact fitting on A4 layout */
+    .col-book   { width: 26%; }
+    .col-member { width: 16%; }
+    .col-staff  { width: 12%; }
+    .col-date   { width: 11%; }
+    .col-fine   { width: 12%; }
+    .col-status { width: 12%; }
+
+    /* Elegant high contrast headers without ink drain background */
+    .print-thead {
+        background: #f1f5f9 !important;
+    }
+
+    .print-thead th {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        font-size: 0.75rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        border-bottom: 2px solid #0f172a !important;
+        padding: 0.5rem 0.375rem !important;
+    }
+
+    /* Table Cells standard crisp look */
+    .print-row {
+        border-bottom: 1px solid #cbd5e1 !important;
+        page-break-inside: avoid !important;
+    }
+
+    .print-row td {
+        padding: 0.5rem 0.375rem !important;
+        font-size: 0.75rem !important;
+        color: #000 !important;
+        line-height: 1.25 !important;
+    }
+
+    .line-clamp-override {
+        display: block !important;
+        overflow: visible !important;
+        white-space: normal !important;
+    }
+
+    /* Plain typography representations for elements inside cells */
+    .print-dash {
+        color: #94a3b8 !important;
+    }
+
+    .print-fine {
+        color: #b91c1c !important;
+        background: transparent !important;
+        font-weight: 600 !important;
+        padding: 0 !important;
+    }
+
+    .print-fine-zero {
+        color: #64748b !important;
+    }
+
+    .print-status-badge {
+        background: transparent !important;
+        color: #000 !important;
+        font-weight: 600 !important;
+        padding: 0 !important;
+        text-transform: uppercase !important;
+        font-size: 0.7rem !important;
+    }
+}
+</style>
+
+<script>
+function printIssuesReport() {
+    document.title = "Book_Issues_Report_" + "<?= date('d_M_Y') ?>";
+    window.print();
+}
+</script>
 
 <?php
 $content = ob_get_clean();
