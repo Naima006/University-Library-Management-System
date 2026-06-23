@@ -26,6 +26,7 @@ $members = $conn->query("
 SELECT *
 FROM members
 WHERE is_active = 1
+AND is_deleted = 0
 ORDER BY first_name ASC
 ");
 

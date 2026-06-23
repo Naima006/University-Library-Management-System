@@ -327,14 +327,48 @@ ob_start();
                 </a>
             <?php endif; ?>
 
-            <?php for ($page = 1; $page <= $total_pages; $page++): ?>
-                <a href="?<?= $page_query ?><?= $page_query !== '' ? '&' : '' ?>page=<?= $page ?>"
+            <?php
+            $max_visible = 5; // how many page numbers to show
+
+            $start = max(1, $current_page - floor($max_visible / 2));
+            $end = $start + $max_visible - 1;
+
+            if ($end > $total_pages) {
+                $end = $total_pages;
+                $start = max(1, $end - $max_visible + 1);
+            }
+            ?>
+
+            <?php if ($start > 1): ?>
+                <a href="?<?= $page_query ?>&page=1"
+                    class="px-3 py-2 border rounded-lg text-sm hover:bg-gray-100">
+                    1
+                </a>
+
+                <?php if ($start > 2): ?>
+                    <span class="px-2 text-gray-400">...</span>
+                <?php endif; ?>
+            <?php endif; ?>
+
+            <?php for ($page = $start; $page <= $end; $page++): ?>
+                <a href="?<?= $page_query ?>&page=<?= $page ?>"
                     class="px-3 py-2 rounded-lg text-sm <?= $page === $current_page
                         ? 'bg-blue-600 text-white'
                         : 'border border-gray-300 text-gray-700 hover:bg-gray-100' ?>">
                     <?= $page ?>
                 </a>
             <?php endfor; ?>
+
+            <?php if ($end < $total_pages): ?>
+                <?php if ($end < $total_pages - 1): ?>
+                    <span class="px-2 text-gray-400">...</span>
+                <?php endif; ?>
+
+                <a href="?<?= $page_query ?>&page=<?= $total_pages ?>"
+                    class="px-3 py-2 border rounded-lg text-sm hover:bg-gray-100">
+                    <?= $total_pages ?>
+                </a>
+            <?php endif; ?>
 
             <?php if ($current_page < $total_pages): ?>
                 <a href="?<?= $page_query ?><?= $page_query !== '' ? '&' : '' ?>page=<?= $current_page + 1 ?>"
