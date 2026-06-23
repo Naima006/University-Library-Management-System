@@ -17,7 +17,12 @@ if ($booksResult) {
     $booksCount = $booksResult->fetch_assoc()['total'];
 }
 
-$membersResult = $conn->query("SELECT COUNT(*) AS total FROM members WHERE is_active = 1");
+$membersResult = $conn->query(
+    "SELECT COUNT(*) AS total
+    FROM members
+    WHERE is_active = 1 AND is_deleted = 0"
+);
+
 if ($membersResult) {
     $membersCount = $membersResult->fetch_assoc()['total'];
 }

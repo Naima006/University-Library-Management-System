@@ -28,6 +28,7 @@ $membersResult = $conn->query("
     SELECT COUNT(*) AS total
     FROM members
     WHERE is_active = 1
+    AND is_deleted = 0
 ");
 
 if ($membersResult) {
