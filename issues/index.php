@@ -171,7 +171,7 @@ ob_start();
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 no-print">
 
         <div>
-            <h1 class="text-3xl font-bold text-slate-800">Book Issues</h1>
+            <h1 class="text-3xl font-bold text-slate-800">Issue & Return Records</h1>
             <p class="text-gray-500">Manage all issued books</p>
         </div>
 

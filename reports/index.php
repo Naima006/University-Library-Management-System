@@ -78,7 +78,7 @@ LIMIT 10
 
 $recentTransactions = $conn->query($recentSql);
 
-$pageTitle = "Reports Dashboard";
+$pageTitle = "Reports";
 
 ob_start();
 ?>
@@ -97,7 +97,7 @@ ob_start();
 
     <div class="flex justify-between items-center mb-6 no-print">
         <div>
-            <h1 class="text-3xl font-bold text-slate-800">Reports Dashboard</h1>
+            <h1 class="text-3xl font-bold text-slate-800">Analytics & Overview</h1>
             <p class="text-gray-500">Library analytics and statistics</p>
         </div>
         <div>

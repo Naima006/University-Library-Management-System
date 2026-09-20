@@ -96,7 +96,7 @@ ob_start();
 
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
-            <h1 class="text-xl font-bold text-slate-800">Categories</h1>
+            <h1 class="text-xl font-bold text-slate-800">Manage Book Categories</h1>
             <p class="text-sm text-gray-500">
                 Organize books by academic department, subject, or course category.
             </p>

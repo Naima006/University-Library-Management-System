@@ -145,11 +145,11 @@ ob_start();
                         </td>
 
                         <!-- ACTIONS -->
-                        <td class="px-5 py-4 space-x-2">
+                        <td class="px-5 py-4 whitespace-nowrap space-x-2">
 
                             <!-- EDIT -->
                             <a href="edit.php?id=<?= $user['user_id'] ?>"
-                               class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200">
+                            class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200">
                                 <i class="fas fa-pen mr-1"></i> Edit
                             </a>
 
@@ -157,8 +157,8 @@ ob_start();
 
                                 <!-- DEACTIVATE -->
                                 <a href="deactivate.php?id=<?= $user['user_id'] ?>"
-                                   onclick="return confirm('Deactivate this user?')"
-                                   class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200">
+                                onclick="return confirm('Deactivate this user?')"
+                                class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200">
                                     <i class="fas fa-user-slash mr-1"></i> Deactivate
                                 </a>
 
@@ -174,7 +174,6 @@ ob_start();
                             <?php endif; ?>
 
                         </td>
-
                     </tr>
                 <?php endwhile; ?>
             <?php else: ?>

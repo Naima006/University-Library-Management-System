@@ -112,14 +112,14 @@ $pageTitle = "Books";
 ob_start();
 ?>
 
-<div class="max-w-7xl mx-auto p-6">
+<div class="max-w-7xl mx-auto">
 
     <!-- HEADER -->
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
 
         <div>
-            <h1 class="text-3xl font-bold text-slate-800">Books Module</h1>
-            <p class="text-gray-500">Manage all library books</p>
+            <h1 class="text-xl font-bold text-slate-800">Manage Books</h1>
+            <p class="text-sm text-gray-500">Add, search, update, and track library books.</p>
         </div>
 
         <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">

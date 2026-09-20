@@ -359,11 +359,11 @@ ob_start();
                     <i class="fas fa-chevron-right text-xs"></i>
                 </a>
 
-                <a href="../activity_logs/index.php"
+                <a href="../reports/index.php"
                    class="flex items-center justify-between rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-emerald-700 hover:bg-emerald-100">
                     <span class="flex items-center font-medium">
-                        <i class="fas fa-history mr-3"></i>
-                        Activity Logs
+                        <i class="fas fa-chart-bar mr-3"></i>
+                        View Reports
                     </span>
                     <i class="fas fa-chevron-right text-xs"></i>
                 </a>

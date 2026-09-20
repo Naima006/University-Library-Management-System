@@ -214,13 +214,15 @@ function activeSidebarLink($path, $currentPath) {
                     </a>
                 </li>
 
-                <li>
-                    <a href="<?= $baseUrl ?>/activity_logs/index.php"
-                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/activity_logs/', $currentPath) ?>">
-                        <i class="fas fa-history mr-2"></i>
-                        Activity Logs
-                    </a>
-                </li>
+                <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
+                    <li>
+                        <a href="<?= $baseUrl ?>/activity_logs/index.php"
+                        class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/activity_logs/', $currentPath) ?>">
+                            <i class="fas fa-history mr-2"></i>
+                            Activity Logs
+                        </a>
+                    </li>
+                <?php endif; ?>
 
                 <li>
                     <a href="<?= $baseUrl ?>/auth/logout.php"
