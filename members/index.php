@@ -76,7 +76,7 @@ if (!empty($params)) {
 $stmt->execute();
 $members = $stmt->get_result();
 
-$pageTitle = "Member Management";
+$pageTitle = "Members";
 
 ob_start();
 ?>
@@ -90,7 +90,11 @@ ob_start();
     </div>
 
     <a href="create.php"
-       class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium">
+       class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-medium text-white
+          bg-gradient-to-r from-cyan-500 to-blue-600
+          shadow-md shadow-cyan-500/25
+          hover:from-cyan-400 hover:to-blue-500
+          transition">
         <i class="fas fa-user-plus mr-2"></i>
         Add Member
     </a>

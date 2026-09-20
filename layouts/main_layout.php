@@ -13,8 +13,8 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 function activeSidebarLink($path, $currentPath) {
     return str_contains($currentPath, $path)
-        ? "bg-blue-700 text-white shadow"
-        : "text-slate-200 hover:bg-blue-700";
+        ? "sidebar-link-active"
+        : "sidebar-link-idle";
 }
 ?>
 
@@ -40,12 +40,58 @@ function activeSidebarLink($path, $currentPath) {
             background: #f8fafc;
         }
 
-        .sidebar-link {
-            transition: all .3s ease;
+        .layout-topbar {
+            height: 5.25rem;
         }
 
-        .sidebar-link:hover {
-            background: #1e40af;
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            position: relative;
+            transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+        }
+
+        .sidebar-link-idle {
+            color: #cbd5e1;
+        }
+
+        .sidebar-link-idle:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+
+        .sidebar-link-active {
+            color: #ffffff;
+            background: linear-gradient(90deg, rgba(34, 211, 238, 0.18) 0%, rgba(37, 99, 235, 0.10) 100%);
+            box-shadow: inset 3px 0 0 0 #22d3ee;
+        }
+
+        .sidebar-link-active i {
+            color: #67e8f9;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 0.4rem;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            line-height: 1;
+            padding: 0.28rem 0.6rem;
+            border-radius: 999px;
+        }
+
+        .role-badge-admin {
+            color: #ecfeff;
+            background: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
+            box-shadow: 0 0 0 1px rgba(165, 243, 252, 0.28), 0 8px 18px rgba(37, 99, 235, 0.28);
+        }
+
+        .role-badge-staff {
+            color: #f0fdf4;
+            background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
+            box-shadow: 0 0 0 1px rgba(167, 243, 208, 0.28), 0 8px 18px rgba(13, 148, 136, 0.24);
         }
     </style>
 </head>
@@ -65,7 +111,7 @@ function activeSidebarLink($path, $currentPath) {
             left-0 top-0 h-full min-h-screen
             transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50">
 
-        <div class="p-5 border-b border-slate-700 flex justify-between items-center">
+        <div class="layout-topbar px-5 border-b border-slate-700 flex justify-between items-center">
             <div class="flex items-center gap-3 min-w-0">
                 <img
                     src="<?= $baseUrl ?>/assets/ulms-logo.png"
@@ -103,7 +149,7 @@ function activeSidebarLink($path, $currentPath) {
                     <?= htmlspecialchars($_SESSION['full_name'] ?? 'User'); ?>
                 </h3>
 
-                <span class="text-xs bg-blue-600 px-2 py-1 rounded">
+                <span class="role-badge <?= (($_SESSION['role'] ?? '') === 'admin') ? 'role-badge-admin' : 'role-badge-staff' ?>">
                     <?= strtoupper($_SESSION['role'] ?? ''); ?>
                 </span>
             </div>
@@ -168,13 +214,15 @@ function activeSidebarLink($path, $currentPath) {
                     </a>
                 </li>
 
-                <li>
-                    <a href="<?= $baseUrl ?>/activity_logs/index.php"
-                    class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/activity_logs/', $currentPath) ?>">
-                        <i class="fas fa-history mr-2"></i>
-                        Activity Logs
-                    </a>
-                </li>
+                <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
+                    <li>
+                        <a href="<?= $baseUrl ?>/activity_logs/index.php"
+                        class="sidebar-link block p-3 rounded-lg <?= activeSidebarLink('/activity_logs/', $currentPath) ?>">
+                            <i class="fas fa-history mr-2"></i>
+                            Activity Logs
+                        </a>
+                    </li>
+                <?php endif; ?>
 
                 <li>
                     <a href="<?= $baseUrl ?>/auth/logout.php"
@@ -194,7 +242,7 @@ function activeSidebarLink($path, $currentPath) {
     <main class="w-full lg:ml-64 bg-slate-50 min-h-screen">
 
         <!-- Topbar -->
-        <div class="bg-white shadow p-4 lg:p-5 flex justify-between items-center gap-3">
+        <div class="layout-topbar bg-white shadow px-4 lg:px-6 flex justify-between items-center gap-3">
 
             <!-- Mobile menu button -->
             <button

@@ -171,7 +171,7 @@ ob_start();
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 no-print">
 
         <div>
-            <h1 class="text-3xl font-bold text-slate-800">Book Issues</h1>
+            <h1 class="text-3xl font-bold text-slate-800">Issue & Return Records</h1>
             <p class="text-gray-500">Manage all issued books</p>
         </div>
 
@@ -180,7 +180,7 @@ ob_start();
             <button
                 onclick="printIssuesReport()"
                 type="button"
-                class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg shadow flex items-center gap-2">
+                class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-lg shadow flex items-center gap-2">
 
                 <i class="fas fa-print"></i>
                 Print PDF
@@ -188,8 +188,11 @@ ob_start();
             </button>
 
             <a href="create.php"
-               class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow flex items-center gap-2">
-
+               class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-medium text-white
+                bg-gradient-to-r from-cyan-500 to-blue-600
+                shadow-md shadow-cyan-500/25
+                hover:from-cyan-400 hover:to-blue-500
+                transition">
                 <i class="fas fa-plus"></i>
                 Issue Book
 

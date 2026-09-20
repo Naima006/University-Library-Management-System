@@ -2,8 +2,13 @@
 session_start();
 include("../config/db.php");
 
-/* Admin and staff can view activity logs */
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'staff'])) {
+/* Admin only: activity logs are an audit trail, not a staff operations screen */
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
+    if (isset($_SESSION['user_id']) && ($_SESSION['role'] ?? '') === 'staff') {
+        header("Location: ../staff/dashboard.php");
+        exit;
+    }
+
     header("Location: ../auth/login.php");
     exit;
 }
@@ -170,7 +175,7 @@ ob_start();
 
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
     <div>
-        <h1 class="text-xl font-bold text-slate-800">Activity Logs</h1>
+        <h1 class="text-xl font-bold text-slate-800">System Log Records</h1>
         <p class="text-sm text-gray-500">
             View the history of actions performed by administrators and staff.
         </p>
