@@ -104,7 +104,7 @@ ob_start();
             <button
                 onclick="printLibraryReport()"
                 type="button"
-                class="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg shadow flex items-center gap-2">
+                class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-lg shadow flex items-center gap-2">
                 <i class="fas fa-print"></i>
                 Print Report
             </button>

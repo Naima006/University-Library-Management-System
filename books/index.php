@@ -107,7 +107,7 @@ $countStmt->execute();
 $total_records = $countStmt->get_result()->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 
-$pageTitle = "Books Modules";
+$pageTitle = "Books";
 
 ob_start();
 ?>
@@ -118,7 +118,7 @@ ob_start();
     <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
 
         <div>
-            <h1 class="text-3xl font-bold text-slate-800">Books Modules</h1>
+            <h1 class="text-3xl font-bold text-slate-800">Books Module</h1>
             <p class="text-gray-500">Manage all library books</p>
         </div>
 
@@ -130,8 +130,12 @@ ob_start();
                 Import Books
             </button>
 
-            <a href="create.php"
-               class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow flex items-center justify-center gap-2">
+           <a href="create.php"
+            class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-medium text-white
+                    bg-gradient-to-r from-cyan-500 to-blue-600
+                    shadow-md shadow-cyan-500/25
+                    hover:from-cyan-400 hover:to-blue-500
+                    transition">
                 <i class="fas fa-plus"></i>
                 Add New Book
             </a>
