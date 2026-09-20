@@ -2,7 +2,7 @@
 
 A web-based Library Management System built with core PHP and MySQL to manage books, categories, members, circulation, staff accounts, reports, and system activity from a single interface.
 
-Live Demo: 
+Live Demo: https://university-library-management.infinityfreeapp.com/
 
 ## Overview
 
