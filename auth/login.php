@@ -90,6 +90,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | University Library Management System</title>
 
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet"
@@ -108,9 +112,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <div class="relative z-10 flex flex-col justify-between w-full">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 border border-blue-300/30 flex items-center justify-center">
-                        <i class="fas fa-book-open text-xl text-blue-200"></i>
-                    </div>
+                    <img
+                        src="../assets/ulms-logo.png"
+                        alt="ULMS logo"
+                        class="h-12 w-12 object-contain">
 
                     <div>
                         <h1 class="font-bold text-lg">ULMS</h1>
@@ -144,9 +149,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <!-- Mobile logo -->
                 <div class="lg:hidden text-center mb-7">
-                    <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg">
-                        <i class="fas fa-book-open text-2xl"></i>
-                    </div>
+                    <img
+                        src="../assets/ulms-logo.png"
+                        alt="ULMS logo"
+                        class="h-14 w-14 mx-auto mb-3 object-contain">
 
                     <h1 class="text-xl font-bold text-slate-800">ULMS</h1>
                     <p class="text-sm text-slate-500">University Library Management System</p>

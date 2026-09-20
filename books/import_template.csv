@@ -1,0 +1,4 @@
+title,author_name,isbn,published_year,total_copies,available_copies,category_name
+Introduction to Algorithms,Thomas H. Cormen,9780262033848,2009,5,5,Computer Science
+Clean Code,Robert C. Martin,9780132350884,2008,4,4,Computer Science
+A Brief History of Time,Stephen Hawking,9780553380163,1998,4,4,Physics
