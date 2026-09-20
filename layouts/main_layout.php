@@ -26,6 +26,10 @@ function activeSidebarLink($path, $currentPath) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?></title>
 
+    <link rel="icon" type="image/x-icon" href="<?= $baseUrl ?>/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= $baseUrl ?>/assets/favicon-32.png">
+    <link rel="apple-touch-icon" href="<?= $baseUrl ?>/assets/apple-touch-icon.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet"
@@ -62,13 +66,19 @@ function activeSidebarLink($path, $currentPath) {
             transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50">
 
         <div class="p-5 border-b border-slate-700 flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-bold">
-                    📚 ULMS
-                </h1>
-                <p class="text-sm text-slate-400">
-                    Library Management
-                </p>
+            <div class="flex items-center gap-3 min-w-0">
+                <img
+                    src="<?= $baseUrl ?>/assets/ulms-logo.png"
+                    alt="ULMS logo"
+                    class="h-10 w-10 shrink-0 object-contain">
+                <div class="min-w-0">
+                    <h1 class="text-2xl font-bold leading-none">
+                        ULMS
+                    </h1>
+                    <p class="text-sm text-slate-400 mt-1">
+                        Library Management
+                    </p>
+                </div>
             </div>
 
             <!-- Close button (mobile only) -->
