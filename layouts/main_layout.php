@@ -36,12 +36,49 @@ function activeSidebarLink($path, $currentPath) {
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        body {
+        html, body {
+            height: 100%;
             background: #f8fafc;
         }
 
         .layout-topbar {
             height: 5.25rem;
+        }
+
+        /* Sidebar stays fixed; only its own nav list can scroll if needed */
+        #sidebar {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Modern theme-matched scrollbar (sidebar nav) */
+        .sidebar-scroll {
+            scrollbar-width: thin;                    /* Firefox */
+            scrollbar-color: #475569 transparent;     /* thumb | track */
+        }
+
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 8px 0;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #334155;                     /* slate-700 */
+            border-radius: 999px;
+            border: 1px solid transparent;
+            background-clip: padding-box;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+            background: #22d3ee;                     /* cyan accent — matches active link */
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb:active {
+            background: #67e8f9;                     /* lighter cyan when dragging */
         }
 
         .sidebar-link {
@@ -98,20 +135,20 @@ function activeSidebarLink($path, $currentPath) {
 
 <body>
 
-<div class="min-h-screen bg-slate-900 lg:flex">
+<div class="min-h-screen bg-slate-50">
 
     <!-- Mobile overlay -->
     <div id="overlay"
          class="fixed inset-0 bg-black/50 hidden lg:hidden z-40"
          onclick="toggleSidebar()"></div>
 
-    <!-- Sidebar -->
+    <!-- Sidebar: fixed on all breakpoints so it never scrolls with page content -->
     <aside id="sidebar"
-        class="w-64 bg-slate-900 text-white fixed lg:absolute lg:left-0 lg:top-0 lg:bottom-0
-            left-0 top-0 h-full min-h-screen
-            transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-50">
+        class="w-64 bg-slate-900 text-white fixed inset-y-0 left-0 z-50
+            transform -translate-x-full lg:translate-x-0 transition-transform duration-300
+            flex flex-col">
 
-        <div class="layout-topbar px-5 border-b border-slate-700 flex justify-between items-center">
+        <div class="layout-topbar px-5 border-b border-slate-700 flex justify-between items-center shrink-0">
             <div class="flex items-center gap-3 min-w-0">
                 <img
                     src="<?= $baseUrl ?>/assets/ulms-logo.png"
@@ -138,7 +175,7 @@ function activeSidebarLink($path, $currentPath) {
             </button>
         </div>
 
-        <div class="p-4">
+        <div class="sidebar-scroll p-4 flex-1 overflow-y-auto">
 
             <div class="mb-5">
                 <p class="text-sm text-slate-400">
@@ -238,11 +275,11 @@ function activeSidebarLink($path, $currentPath) {
 
     </aside>
 
-    <!-- Main Content -->
-    <main class="w-full lg:ml-64 bg-slate-50 min-h-screen">
+    <!-- Main Content: scrolls independently; sidebar stays fixed -->
+    <main class="w-full min-h-screen bg-slate-50 lg:pl-64">
 
         <!-- Topbar -->
-        <div class="layout-topbar bg-white shadow px-4 lg:px-6 flex justify-between items-center gap-3">
+        <div class="layout-topbar bg-white shadow px-4 lg:px-6 flex justify-between items-center gap-3 sticky top-0 z-30">
 
             <!-- Mobile menu button -->
             <button
