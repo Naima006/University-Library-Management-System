@@ -423,7 +423,7 @@ Possible future improvements include:
 * **Naima Rahman**
 * **Zarin Chowdhury**
 
-Developed as a team project during our Software Development Internship at IT Lab Solutions Ltd.
+Developed as a team project.
 
 ## License
 
